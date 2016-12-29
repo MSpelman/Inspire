@@ -1,4 +1,4 @@
-# Inspire: an MRI Breathing Game
+# Inspire: An MRI Breathing Game
 - This repository is still under construction
 
 This is a game to guide breathing during an MRI. The purpose is to improve image quality and efficiency by encouraging breathing patterns conducive to clear images, especially when the patient is a child. It also improves the patient's experience by providing them entertainment.
