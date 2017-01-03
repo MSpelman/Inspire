@@ -41,6 +41,12 @@ public class WaveFormAlgorithmTest {
 	{
 		int position;
 
+		// This resets the timer on SpawnPowerUp()
+		while (algorithm.SpawnPowerUp () < 1)
+		{
+			// Do nothing
+		}
+
 		for (int i = 0; i < 4; i++)
 		{
 			position = algorithm.SpawnPowerUp();
