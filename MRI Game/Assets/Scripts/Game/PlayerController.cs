@@ -113,7 +113,7 @@ public class PlayerController : MonoBehaviour {
 	void Update()
 	{
 		// GetInput to get most recent MRI data
-		int position = input.GetInput(true);  // Remove true when using with server
+		int position = input.GetInput();  // Remove true when using with server
 
 		// Make sure the position is not out of the bounds set by the calibration
 		if (position > calibration.Max)

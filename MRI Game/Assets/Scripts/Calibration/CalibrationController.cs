@@ -26,7 +26,7 @@ public class CalibrationController
 	 */
     public void Update()
     {
-        int val = input.GetInput(true);  // Remove true when use actual server
+        int val = input.GetInput();  // Remove true when use actual server
         if (val > Calibration.Max)
         {
             Calibration.Max = val;
