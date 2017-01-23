@@ -11,14 +11,14 @@ using System.Linq;
 using NUnit.Framework;
 
 [TestFixture]
-public class InputUnitTests
+public class SimInputTest
 {
-	TcpInput inputModule;
+	SimInput inputModule;
 
 	[SetUp]
 	public void initialize()
 	{
-		this.inputModule = new TcpInput();
+		this.inputModule = new SimInput();
 	}
 
 	[Test]

@@ -3,10 +3,13 @@ using System.Collections;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using Shared;
+using System.IO;
+using System;
 
 public class Preferences : MonoBehaviour {
 
 	private bool isFirstStart = true;
+	private string configFilePath = "config.txt";
 
 	//assets - the components that are mapped to gameObjects in Scene
 	public InputField TechNameInput;
@@ -30,7 +33,7 @@ public class Preferences : MonoBehaviour {
 
 		if (isFirstStart) {
 			if (GameSetup.Input == null) {
-				GameSetup.Input = new TcpInput ();
+				GetGameInput();
 			}
 			isFirstStart = false;
 		}
@@ -63,6 +66,34 @@ public class Preferences : MonoBehaviour {
 			PlayerPrefs.SetInt ("mirror", MirrorActive.isOn ? 1 : 0);
 
 			SceneManager.LoadScene ("MainMenuScene");
+		}
+	}
+
+	/* 
+	 * Determines input source for game.  Currently, if a config file is found, it uses TcpInput.
+	 * If there is no config file, it uses simulated input.  Can be expanded in the future to handle
+	 * things like the ability to create a direct connection from the bellows to the game (i.e. no Server).
+	 */
+	private void GetGameInput()
+	{
+		if (!File.Exists (configFilePath))
+		{
+			GameSetup.Input = new SimInput ();
+		} else {
+			string address;
+			try
+			{
+				using (BinaryReader reader = new BinaryReader(new FileStream(configFilePath, FileMode.Open)))
+				{
+					address = reader.ReadString();
+					GameSetup.Input = new TcpInput (address);
+				}
+			}
+			catch (Exception e)
+			{
+				Debug.Log("Problem reading config.txt " + e.Message);
+				GameSetup.Input = new SimInput ();  // Cannot open config file, so use simulated
+			}
 		}
 	}
 }

@@ -8,12 +8,12 @@ using System.Collections;
 public class CalibrationController
 {
 
-	private BellowsInput input;
+	private IGameInput input;
 
 	// Provides access to the calibration created.
     public Calibration Calibration { get; private set; }
 
-    public CalibrationController(BellowsInput input)
+    public CalibrationController(IGameInput input)
     {
         this.input = input;
 		Calibration = new Calibration ();

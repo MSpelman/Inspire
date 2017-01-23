@@ -17,13 +17,14 @@ public class TcpInput : BellowsInput
 	private Thread GetterThread, LoggerThread, MainThread;
 	private AutoResetEvent GetterSignaler, LoggerSignaler;
 	private int ServerPort = 5355;
-	private string ServerIP = "0.0.0.0";
+	private string ServerIP;
 	private TcpClient Client;
 	private NetworkStream Stream;
 	private int[] CurrentBuffer, LogBuffer;
 	private volatile int MostRecentData;
 
-	public TcpInput (){
+	public TcpInput (string address){
+		ServerIP = address;
 		MainThread = Thread.CurrentThread;
 		this.MostRecentData = 0;
 		this.CurrentBuffer = new int[BellowsInput.BufferSize];

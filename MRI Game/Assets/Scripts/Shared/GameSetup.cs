@@ -19,7 +19,7 @@ public static class GameSetup {
 	public static int Level {get; set;}
 	public static MainMenu.State CurrentState {get;set;}
 	public static CalibrationController CalibrationController {get; set;}
-	public static BellowsInput Input {get; set;}
+	public static IGameInput Input {get; set;}
 
 	//These are inteded to be changed as the game advances, these are just temps
 	//TODO: There are better approaches to this..
