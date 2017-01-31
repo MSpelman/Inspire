@@ -14,17 +14,23 @@ using UnityEngine;
 
 public class TcpInput : BellowsInput
 {
+	// The server only sends position data, not the whole message.
+	// Thus, we cannot use the constants provided by the BellowsInput class
+	private const int MessageLength = 2;  // In bytes
+	private const int BellowsPositionDataOffset = 0;
+
 	private Thread GetterThread, LoggerThread, MainThread;
 	private AutoResetEvent GetterSignaler, LoggerSignaler;
-	private int ServerPort = 5355;
+	private int ServerPort;
 	private string ServerIP;
 	private TcpClient Client;
 	private NetworkStream Stream;
 	private int[] CurrentBuffer, LogBuffer;
 	private volatile int MostRecentData;
 
-	public TcpInput (string address){
+	public TcpInput (string address, int port){
 		ServerIP = address;
+		ServerPort = port;
 		MainThread = Thread.CurrentThread;
 		this.MostRecentData = 0;
 		this.CurrentBuffer = new int[BellowsInput.BufferSize];
@@ -49,7 +55,7 @@ public class TcpInput : BellowsInput
 	Get DataThreadStart
 	*/
 	private void GetterThreadStart (){
-		byte[] Buffer = new byte[BellowsInput.MessageLength];
+		byte[] Buffer = new byte[MessageLength];
 		int Index = 0;
 		while(Client.Connected && MainThread.IsAlive){
 			if(Index >= this.CurrentBuffer.Length){
@@ -58,7 +64,7 @@ public class TcpInput : BellowsInput
 				this.GetterSignaler.Set();//Signal to logger to log
 				Index = 0;
 			}
-			if (this.Client.Available >= BellowsInput.MessageLength) {
+			if (this.Client.Available >= MessageLength) {
 				try {
 					int bytes_read = this.Stream.Read (Buffer, 0, Buffer.Length);
 					if (bytes_read == -1) {
@@ -68,7 +74,7 @@ public class TcpInput : BellowsInput
 					Console.WriteLine ("Exception occured when reading from stream " + e.Message);
 					break;
 				}
-				ushort Data = BitConverter.ToUInt16 (Buffer, BellowsInput.BellowsPositionDataOffset);
+				ushort Data = BitConverter.ToUInt16 (Buffer, BellowsPositionDataOffset);
 				Data = (ushort)(4095 - Data);
 				Debug.Log (Data);
 				this.MostRecentData = (int)Data;

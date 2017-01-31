@@ -1,0 +1,61 @@
+*** NOTE: these instructions are a work-in-progress and may not be completely accurate. ***
+
+These instructions are for setting up and running the entire application including both the Server (which connects to the MRI and transmits the data from the bellows to the Client) and the Client (the game itself, which uses the transmitted data to move the patient's avatar). You may not need to perform all these steps.  For example, if you just want to test the game by running it in the editor using simulated data, none of these steps are needed. Thus please read over all the instructions before starting to perform them. 
+
+1. COMPILE THE SERVER
+This only needs to be done once when you first use the server (since the project does not contain the GameServer.exe file), or any time you want changes you make to the GameServer.cs file to take effect.
+
+Linux/Mac (assumes Mono is installed; see note below on Mono for more details):
+- Open a terminal and navigate to the folder which contains GameServer.cs (using "cd").
+- Once you are in the proper directory, execute the following command:
+    mcs GameServer.cs
+
+Windows:
+Visual Studio should provide tools for compiling C#, including "csc" which the Windows/Visual Studio equivalent of "mcs". More details can be found on the Microsoft Developer Network website.
+
+2. START THE SERVER PROGRAM
+Linux/Mac (assumes Mono is installed):
+    sudo mono GameServer.exe (you will be asked for your password)
+
+Windows: Windows/Visual Studio should allow you to run the executable from the command line (Mono is only needed for Linux/Mac since they cannot run Windows-style executables.)
+
+3. CONFIGURE THE SERVER
+Upon startup, the server program should show you the current values for things like the port number, server IP address, etc.  If the default values look correct, skip to step 4.
+
+If changes need to be made, use "commands" to see a list of commands for changing these values.
+
+Of particular note is the "setname" command. Normally this is used to specify the name of the serial port providing the connection to the MRI/bellows. However, you can use it to specify a text file (must have .txt extension) with test data (each datum on its own line).  This allows you to test with real data without needing a connection to an MRI.
+
+4. RUN THE SERVER
+Once the server settings are correct, enter the following command:
+    run
+
+    Example:
+    Enter a command (use "commands" to see a list of commands)
+    > run
+    Waiting for client to establish connection...
+
+5. BUILD THE CLIENT
+This only needs to be done once when you first run the game (since the project does not contain a built executable), or any time you want changes you make to the Unity project to take effect.
+
+In the Unity editor navigate to File > Build Settings...  Make the appropriate selections for your build target and press the Build button.  This will create a stand-alone application.
+
+6. CONFIGURE THE CLIENT
+This only needs to be done once when you first run the game (since the project does not contain a config.txt file), or when you need to change the IP address or port the game is using to connect to the server.
+
+Navigate to the directory with the application you built in step 5.  If a file named "config.txt" does not exist, create one; if it does exist, open it.  The first line should contain the IP address of the server, the second line the port number.
+
+Note: If the config.txt file does not exist in the same directory as the executable (or in the MRI Game directory if you are running the game through the editor), it will default to simulated input mode. Simulated input mode allows you to play the game portion of the application without establishing a server connection; instead it generates simulated data in the form of a sine wave. This is very useful for game development, allowing you to quickly test changes without having to set up and run the server portion of the application.
+
+7. START THE CLIENT
+Find the application file create in step 5 and double click on it.
+
+TROUBLESHOOTING
+If the run command fails, you will get an error message which will *hopefully* help you solve the problem.
+
+If the server is failing, try closing both the server and game, or even rebooting the computer with the server on it.
+
+NOTE ON MONO
+Mono is an Open Source .NET framework, which provides tools for working with C#.  It is only needed by Linux/Mac users, as Windows users can use Visual Studio.
+
+You can obtain Mono through the MonoDevelop-Unity app that gets installed with the Linux and Mac versions of Unity.  In MonoDevelop-Unity go to the Help menu > Web > Mono Project.

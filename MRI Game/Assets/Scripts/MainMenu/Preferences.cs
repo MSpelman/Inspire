@@ -80,13 +80,13 @@ public class Preferences : MonoBehaviour {
 		{
 			GameSetup.Input = new SimInput ();
 		} else {
-			string address;
 			try
 			{
 				using (BinaryReader reader = new BinaryReader(new FileStream(configFilePath, FileMode.Open)))
 				{
-					address = reader.ReadString();
-					GameSetup.Input = new TcpInput (address);
+					string address = reader.ReadString();
+					int port = Int32.Parse (reader.ReadString ());
+					GameSetup.Input = new TcpInput (address, port);
 				}
 			}
 			catch (Exception e)
