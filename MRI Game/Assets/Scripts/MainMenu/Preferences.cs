@@ -82,10 +82,10 @@ public class Preferences : MonoBehaviour {
 		} else {
 			try
 			{
-				using (BinaryReader reader = new BinaryReader(new FileStream(configFilePath, FileMode.Open)))
+				using (StreamReader reader = new StreamReader(configFilePath))
 				{
-					string address = reader.ReadString();
-					int port = Int32.Parse (reader.ReadString ());
+					string address = reader.ReadLine ();
+					int port = Int32.Parse (reader.ReadLine ());
 					GameSetup.Input = new TcpInput (address, port);
 				}
 			}

@@ -7,6 +7,13 @@ This only needs to be done once when you first use the server (since the project
 
 Linux/Mac (assumes Mono is installed; see note below on Mono for more details):
 - Open a terminal and navigate to the folder which contains GameServer.cs (using "cd").
+
+  Note: If you don't want your exe file to be committed to your repository, you can either add
+  it to your .gitignore or copy the GameServer.cs file to a location that is not linked to
+  your repository before creating the executable.  If you choose to copy, just be sure to make
+  a copy of the original file and paste it in the new location, leaving the original file in 
+  place (since you do want GameServer.cs to be included in the repository).
+
 - Once you are in the proper directory, execute the following command:
     mcs GameServer.cs
 
