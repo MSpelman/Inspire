@@ -117,7 +117,8 @@ public class TcpInput : BellowsInput
 			this.Client = new TcpClient();
 			this.Client.Connect(this.ServerIP, this.ServerPort);
 			this.Stream = this.Client.GetStream ();
-		}catch(Exception){
+		}catch(Exception e){
+			Debug.Log ("Exception occured when trying to connect: " + e.Message);
 			return false;
 		}
 		return true;

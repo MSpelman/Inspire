@@ -122,8 +122,6 @@ public class GameServer
 	}
 	/*
 	 * Run() attempts to open a serial port and establish a tcp connection.
-	 * If either fail, it will wait half a second and try again. After ~30 seconds
-	 * without succeeding, Run() will return to the prompt loop
 	 */
 	public void Run ()
 	{
@@ -132,6 +130,10 @@ public class GameServer
 
 		// Create TCP Listener and client connection
 		Listener = new TcpListener (IPAddress.Parse (IPString), TcpPort);
+        Console.WriteLine("Listening on IP address: " +
+                    IPAddress.Parse(((IPEndPoint)Listener.LocalEndpoint).Address.ToString()) +
+                    " and port: " +
+                    ((IPEndPoint)Listener.LocalEndpoint).Port.ToString());
 		if (!TcpConnect ()) {
 			Console.WriteLine ("Unable to connect to Input");
 			return;
@@ -363,7 +365,7 @@ public class GameServer
      */
     private string CurrentSettings ()
     {
-        string settings = "Current Settings:\n"
+        string settings = "\nCurrent Settings:\n"
                         + "Port or file name: " + Name + "\n"
                         + "Port number: " + TcpPort + "\n"
                         + "IP Address: " + IPString + "\n\n";

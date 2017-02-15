@@ -84,7 +84,7 @@ public class Preferences : MonoBehaviour {
 			{
 				using (StreamReader reader = new StreamReader(configFilePath))
 				{
-					string address = reader.ReadLine ();
+					string address = reader.ReadLine ().Trim();
 					int port = Int32.Parse (reader.ReadLine ());
 					GameSetup.Input = new TcpInput (address, port);
 				}
