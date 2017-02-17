@@ -22,6 +22,7 @@ Visual Studio should provide tools for compiling C#, including "csc" which the W
 
 2. START THE SERVER PROGRAM
 Linux/Mac (assumes Mono is installed):
+- Open a terminal, navigate to the folder which contains GameServer.exe (using "cd"), and execute this command:
     sudo mono GameServer.exe (you will be asked for your password)
 
 Windows: Windows/Visual Studio should allow you to run the executable from the command line (Mono is only needed for Linux/Mac since they cannot run Windows-style executables.)
@@ -51,6 +52,8 @@ In the Unity editor navigate to File > Build Settings...  Make the appropriate s
 This only needs to be done once when you first run the game (since the project does not contain a config.txt file), or when you need to change the IP address or port the game is using to connect to the server.
 
 Navigate to the directory with the application you built in step 5.  If a file named "config.txt" does not exist, create one; if it does exist, open it.  The first line should contain the IP address of the server, the second line the port number.
+
+Note: If you are running the Server on IP Address 0.0.0.0, you need to specify localhost as the IP, not 0.0.0.0.
 
 Note: If the config.txt file does not exist in the same directory as the executable (or in the MRI Game directory if you are running the game through the editor), it will default to simulated input mode. Simulated input mode allows you to play the game portion of the application without establishing a server connection; instead it generates simulated data in the form of a sine wave. This is very useful for game development, allowing you to quickly test changes without having to set up and run the server portion of the application.
 

@@ -210,6 +210,8 @@ public class GameServer
 	 */
 	private short ReceiveFileData ()
 	{
+        // Real data sent every 3 ms; need to throttle
+        Task.Delay (3);
         try {
             short data;
             String fileLine = fileStream.ReadLine().Trim();
