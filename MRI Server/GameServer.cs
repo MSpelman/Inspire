@@ -217,6 +217,7 @@ public class GameServer
             String fileLine = fileStream.ReadLine().Trim();
             Console.WriteLine("Sending: " + fileLine);
             data = Int16.Parse(fileLine);
+            data = (short)(4095 - data);
             return data;
         } catch (Exception) {
             return -2;

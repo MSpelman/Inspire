@@ -3,6 +3,12 @@ using System;
 using System.Collections;
 using System.IO;
 
+/* The use of 'bellows' in this class is a misnomer; it is actually referring to game data
+ * gameData = 4095 - bellowsData
+ * 
+ * The name of the log file was updated, as this is something users see, but the code still needs to be
+ * re-written to reflect this.
+ */
 public class Log
 {
 
@@ -103,7 +109,7 @@ public class Log
 
 	private void TimestampFilenames ()
 	{
-		bellowsLogName = "bellowslog_" + Timestamp ();
+		bellowsLogName = "gamedatalog_" + Timestamp ();
 		eventLogName = "eventlog_" + Timestamp ();
 		calibrationLogName = "calibrationlog_" + Timestamp ();
 	}
