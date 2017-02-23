@@ -27,6 +27,7 @@ public class TcpInput : BellowsInput
 	private NetworkStream Stream;
 	private int[] CurrentBuffer, LogBuffer;
 	private volatile int MostRecentData;
+	private Log log;
 
 	public TcpInput (string address, int port){
 		ServerIP = address;
@@ -35,6 +36,7 @@ public class TcpInput : BellowsInput
 		this.MostRecentData = 0;
 		this.CurrentBuffer = new int[BellowsInput.BufferSize];
 		this.LogBuffer = new int[BellowsInput.BufferSize];
+		this.log = Log.GetInstance ();
 
 		if (!this.Connect ()) {
 			throw new Exception ("Cannot connect to server");
@@ -97,15 +99,18 @@ public class TcpInput : BellowsInput
 		while(MainThread.IsAlive){
 			this.LoggerSignaler.Set();//Signal that logger is ready to run
 			this.GetterSignaler.WaitOne();//wait for signal from getter
-			this.Log(this.LogBuffer, this.LogBuffer.Length);	
+			this.log.LogBellowsData (this.LogBuffer);	
 			Array.Clear(this.LogBuffer, 0, this.LogBuffer.Length);
 		}
 	}
-	private void Log(int[] Buffer, int Count){
+
+	/*
+	private void Logger(int[] Buffer, int Count){
 		for (int n = 0; n < Count; n++) {
 			Console.WriteLine (Buffer [n]);
 		}
-	}
+	} */
+
 	private void SwapBuffers(){
 		int[] Temp = null;
 		Temp = this.CurrentBuffer;

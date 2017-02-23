@@ -65,9 +65,9 @@ public class Log
 		if (!running) {
 			return;
 		}
-		using (var writer = new BinaryWriter (File.Open (bellowsLogName, FileMode.Truncate))) {
+		using (var writer = File.AppendText (bellowsLogName)) {
 			foreach (var value in data) {
-				writer.Write (value);
+				writer.WriteLine (value);
 			}
 		}
 	}

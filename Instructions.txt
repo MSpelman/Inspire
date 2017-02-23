@@ -32,7 +32,7 @@ Upon startup, the server program should show you the current values for things l
 
 If changes need to be made, use "commands" to see a list of commands for changing these values.
 
-Of particular note is the "setname" command. Normally this is used to specify the name of the serial port providing the connection to the MRI/bellows. However, you can use it to specify a text file (must have .txt extension) with test data (each datum on its own line).  This allows you to test with real data without needing a connection to an MRI.
+Of particular note is the "setname" command. Normally this is used to specify the name of the serial port providing the connection to the MRI/bellows. However, you can use it to specify a text file (must have .txt extension) with test data (each datum on its own line).  This allows you to test with real data without needing a connection to an MRI.  Note that each datum is not an actual bellows message, or even a bellows position.  It is a bellows position subtracted from 4095.  This was done so it uses the same format as the game data logs produced by the game.  Thus you can run a scan on an actual person and use the generated logs as test data.
 
 4. RUN THE SERVER
 Once the server settings are correct, enter the following command:
@@ -55,7 +55,7 @@ Navigate to the directory with the application you built in step 5.  If a file n
 
 Note: If you are running the Server on IP Address 0.0.0.0, you need to specify localhost as the IP, not 0.0.0.0.
 
-Note: If the config.txt file does not exist in the same directory as the executable (or in the MRI Game directory if you are running the game through the editor), it will default to simulated input mode. Simulated input mode allows you to play the game portion of the application without establishing a server connection; instead it generates simulated data in the form of a sine wave. This is very useful for game development, allowing you to quickly test changes without having to set up and run the server portion of the application.
+Note: If the config.txt file does not exist in the same directory as the executable (or in the MRI Game directory if you are running the game through the editor), it will default to simulated input mode. It will also use simulated input mode if it cannot establish a server connection (e.g. because you did not start the server). Simulated input mode allows you to play the game portion of the application without establishing a server connection; instead it generates simulated data in the form of a sine wave. This is very useful for game development, allowing you to quickly test changes without having to set up and run the server portion of the application.
 
 7. START THE CLIENT
 Find the application file create in step 5 and double click on it.
