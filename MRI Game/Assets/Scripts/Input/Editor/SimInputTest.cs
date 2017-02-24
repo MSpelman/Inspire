@@ -11,14 +11,14 @@ using System.Linq;
 using NUnit.Framework;
 
 [TestFixture]
-public class InputUnitTests
+public class SimInputTest
 {
-	InputModule inputModule;
+	SimInput inputModule;
 
 	[SetUp]
 	public void initialize()
 	{
-		this.inputModule = new InputModule();
+		this.inputModule = new SimInput();
 	}
 
 	[Test]
@@ -26,7 +26,7 @@ public class InputUnitTests
 	{
 		for (int x = 0; x < 10000; x++) 
 		{
-			int data = this.inputModule.GetInput(true);
+			int data = this.inputModule.GetInput();
 			Assert.Less(data, 10000);
 			Assert.Greater(data, 0);
 		}
