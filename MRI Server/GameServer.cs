@@ -187,13 +187,13 @@ public class GameServer
 
 	/*
 	 * ReceiveData attempts to read data from the serial port or file
-	 * Returns: 0 if a full message of data is not available but the port is open
-	 *          1 if a full message was read
-	 *          -1 if the read fails or the port is closed
+	 * Returns: -1              if a full message of data is not available but the port is open
+	 *          bellowsPosition if a full message was read
+	 *          -2              if the read fails or the port is closed
 	 */
 	private short ReceiveData (bool isFile)
 	{
-		short result = -1;
+		short result = -2;
 		if (isFile)
 		{
 			result = this.ReceiveFileData ();
@@ -205,8 +205,8 @@ public class GameServer
 
 	/*
 	 * ReceiveFileData attempts to read data from a file
-	 * Returns: 1 if successful
-	 *          -1 if the read fails
+	 * Returns: bellowsPosition if successful
+	 *          -2 if the read fails
 	 */
 	private short ReceiveFileData ()
 	{
@@ -226,9 +226,9 @@ public class GameServer
 
 	/*
 	 * ReceiveBellowsData attempts to read data from the serial port
-	 * Returns: 0 if a full message of data is not available but the port is open
-	 *          1 if a full message was read
-	 *          -1 if the read fails or the port is closed
+     * Returns: -1              if a full message of data is not available but the port is open
+     *          bellowsPosition if a full message was read
+     *          -2              if the read fails or the port is closed
 	 */
 	private short ReceiveBellowsData ()
 	{
@@ -248,10 +248,10 @@ public class GameServer
 	}
 
 	/*
-	 * SendData attempts to send data over the network via the servers tcp connection
+	 * SendData attempts to send data over the network via the server's tcp connection
 	 * Data is sent by writing a byte array to the tcp connection's network stream
-	 * returns: 0 on success
-	 *          -1 on failure
+	 * returns: true on success
+	 *          false on failure
 	 */
 	public bool SendData (byte[] Data)
 	{
@@ -311,8 +311,8 @@ public class GameServer
 	/*
 	 * TcpConnect creates a tcp listener and waits for a connection to be established 
 	 * by a tcp client
-	 * returns: 0 if the connection is successfully established
-	 *          -1 if established the connection fails
+	 * returns: true if the connection is successfully established
+	 *          false if established the connection fails
 	 */
 	public bool TcpConnect ()
 	{ 
