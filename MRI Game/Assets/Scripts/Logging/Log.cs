@@ -42,14 +42,23 @@ public class Log
 
 	/*
 	 * Enables logging to files.
-	 * Removes any old files and creates and timestamps new files.
+	 * Creates and timestamps new files.
+	 * isCalibration - true if logging calibration data, false if logging game events
 	 */
-	public void Start ()
+	public void Start (bool isCalibration)
 	{
 		running = true;
 		// RemoveFiles ();
 		TimestampFilenames ();
-		CreateFiles ();
+		CreateFiles (isCalibration);
+	}
+
+	/*
+	 * Overloaded version of above method
+	 */
+	public void Start ()
+	{
+		Start (false);
 	}
 
 	/*
@@ -114,14 +123,18 @@ public class Log
 		calibrationLogName = "calibrationlog_" + Timestamp ();
 	}
 
-	private void CreateFiles ()
+	private void CreateFiles (bool isCalibration)
 	{
 		try {
+			if (isCalibration)
+			{
+				File.Create (calibrationLogName).Close ();
+			} else {
+				File.Create (eventLogName).Close ();
+			}
 			File.Create (bellowsLogName).Close ();
-			File.Create (eventLogName).Close ();
-			File.Create (calibrationLogName).Close ();
 		} catch (Exception e) {
-			Debug.Log ("Unable to create file " + e);
+			Console.Write ("Unable to create file " + e);
 		}
 		
 	}

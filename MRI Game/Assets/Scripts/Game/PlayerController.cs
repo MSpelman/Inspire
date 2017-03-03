@@ -52,7 +52,7 @@ public class PlayerController : MonoBehaviour {
 		if (!isTutorial)
 		{
 			log = Log.GetInstance ();
-			log.Start ();
+			log.Start (false);
 		}
 		pointValue = 10;
 		SetHighScore ();

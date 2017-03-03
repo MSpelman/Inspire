@@ -11,7 +11,7 @@ public class LogUnitTests
 	Random rng = new Random ();
 
 	// Increase SLEEP_TIME for robustness, decrease for speed
-	const int SLEEP_TIME = 300;
+	const int SLEEP_TIME = 1000;
 	const int DATA_AMOUNT = 1000;
 
 	[SetUp]
@@ -35,7 +35,7 @@ public class LogUnitTests
 	[Test]
 	public void LogStoresEvents ()
 	{
-		log.Start ();
+		log.Start (false);
 		List<GameEvent> gameEvents = RandomEvents (DATA_AMOUNT);
 
 		foreach (var gameEvent in gameEvents) {
@@ -51,7 +51,7 @@ public class LogUnitTests
 	[Test]
 	public void LogTimestampsEvents ()
 	{
-		log.Start ();
+		log.Start (false);
 		GameEvent gameEvent = new GameEvent ("Test event");
 
 		var timestamp = Timestamp ();
@@ -64,7 +64,7 @@ public class LogUnitTests
 	[Test]
 	public void LogStoresCalibrations ()
 	{
-		log.Start ();
+		log.Start (true);
 		List<Calibration> calibrations = RandomCalibrations (DATA_AMOUNT);
 
 		foreach (var calibration in calibrations) {
@@ -80,7 +80,7 @@ public class LogUnitTests
 	[Test]
 	public void LogTimestampsCalibrations ()
 	{
-		log.Start ();
+		log.Start (true);
 		Calibration calibration = new Calibration ();
 
 		var timestamp = Timestamp ();
@@ -91,38 +91,62 @@ public class LogUnitTests
 	}
 
 	[Test]
-	public void LogTimestampsFiles ()
+	public void LogCalibrationTimestampsFiles ()
 	{
-		string bellowsFiletag = "bellowslog_";
-		string eventFileTag = "eventlog_";
+		string bellowsFiletag = "gamedatalog_";
 		string calibrationFileTag = "calibrationlog_";
 
 		SleepFor (SLEEP_TIME);
 		
 		var startTime = Timestamp ();
 		// Resets the file name
-		log.Start ();
+		log.Start (true);
 		// Closes the file
 		log.Stop ();
 
 		// Verify file exists and can be opened.
 		File.Open (log.bellowsLogName, FileMode.Open).Close();
 		File.Open (log.calibrationLogName, FileMode.Open).Close();
-		File.Open (log.eventLogName, FileMode.Open).Close();
 
 		// Check that format is "<tag>_<timestamp>"
 		Assert.AreEqual (bellowsFiletag + startTime, log.bellowsLogName);
 		Assert.AreEqual (calibrationFileTag + startTime, log.calibrationLogName);
+	}
+
+	[Test]
+	public void LogEventTimestampsFiles ()
+	{
+		string bellowsFiletag = "gamedatalog_";
+		string eventFileTag = "eventlog_";
+
+		SleepFor (SLEEP_TIME);
+
+		var startTime = Timestamp ();
+		// Resets the file name
+		log.Start (false);
+		// Closes the file
+		log.Stop ();
+
+		// Verify file exists and can be opened.
+		File.Open (log.bellowsLogName, FileMode.Open).Close();
+		File.Open (log.eventLogName, FileMode.Open).Close();
+
+		// Check that format is "<tag>_<timestamp>"
+		Assert.AreEqual (bellowsFiletag + startTime, log.bellowsLogName);
 		Assert.AreEqual (eventFileTag + startTime, log.eventLogName);
 	}
 
 	[Test]
 	public void StoppingIgnoresAllLogging ()
 	{
-		log.Start ();
+		log.Start (true);
 		log.Stop ();
 
-		LogManyThings ();
+		log.Start (false);
+		log.Stop ();
+
+		LogManyThings (true);
+		LogManyThings (false);
 
 		Assert.IsEmpty (IntsParsedFrom (log.bellowsLogName));
 		Assert.IsEmpty (DescriptionsFrom (log.eventLogName));
@@ -132,42 +156,61 @@ public class LogUnitTests
 	[Test]
 	public void StartingAfterStoppingAllowsLogging ()
 	{
-		log.Start ();
+		log.Start (true);
 		log.Stop ();
-		log.Start ();
+		log.Start (true);
 
-		LogManyThings ();
+		LogManyThings (true);
+
+		Assert.IsNotEmpty (IntsParsedFrom (log.bellowsLogName));
+		Assert.IsNotEmpty (DescriptionsFrom (log.calibrationLogName));
+
+		log.Start (false);
+		log.Stop ();
+		log.Start (false);
+
+		LogManyThings (false);
 
 		Assert.IsNotEmpty (IntsParsedFrom (log.bellowsLogName));
 		Assert.IsNotEmpty (DescriptionsFrom (log.eventLogName));
-		Assert.IsNotEmpty (DescriptionsFrom (log.calibrationLogName));
 	}
 
 	[Test]
 	public void StartingAfterStoppingClearsAllLogs ()
 	{
-		log.Start ();
-		LogManyThings ();
+		log.Start (true);
+		LogManyThings (true);
 		log.Stop ();
-		log.Start ();
+		log.Start (true);
+
+		Assert.IsEmpty (IntsParsedFrom (log.bellowsLogName));
+		Assert.IsEmpty (DescriptionsFrom (log.calibrationLogName));
+
+		log.Start (false);
+		LogManyThings (false);
+		log.Stop ();
+		log.Start (false);
 
 		Assert.IsEmpty (IntsParsedFrom (log.bellowsLogName));
 		Assert.IsEmpty (DescriptionsFrom (log.eventLogName));
-		Assert.IsEmpty (DescriptionsFrom (log.calibrationLogName));
 	}
 
 	[Test]
 	public void CreateFilesCatchesException()
 	{
-		var nameCollisionFile = "bellowslog_" + Timestamp ();
+		var nameCollisionFile = "gamedatalog_" + Timestamp ();
 		File.Create (nameCollisionFile);
 		log.Start ();
 
 		// Should not throw an IOException
 	}
 
-
 	private void LogManyThings ()
+	{
+		LogManyThings (false);
+	}
+
+	private void LogManyThings (bool isCalibration)
 	{
 		List<int[]> datalists = new List<int[]> ();
 		for (int i = 0; i < DATA_AMOUNT; i++) {
@@ -179,11 +222,14 @@ public class LogUnitTests
 		foreach (var data in datalists) {
 			log.LogBellowsData (data);
 		}
-		foreach (var gameEvent in events) {
-			log.LogEvent (gameEvent);
-		}
-		foreach (var calibration in calibrations) {
-			log.LogCalibration (calibration);
+		if (isCalibration) {
+			foreach (var calibration in calibrations) {
+				log.LogCalibration (calibration);
+			}
+		} else {
+			foreach (var gameEvent in events) {
+				log.LogEvent (gameEvent);
+			}
 		}
 	}
 
@@ -205,9 +251,9 @@ public class LogUnitTests
 	private int[] IntsParsedFrom (string path)
 	{
 		List<int> ints = new List<int> ();
-		using (BinaryReader reader = new BinaryReader (File.Open (path, FileMode.Open))) {
-			while (reader.BaseStream.Position < reader.BaseStream.Length) {
-				ints.Add (reader.ReadInt32 ());
+		using (StreamReader reader = new StreamReader (File.Open (path, FileMode.Open))) {
+			while (reader.Peek() > 0) {
+				ints.Add (Int32.Parse (reader.ReadLine ()));
 			}
 		}
 		return ints.ToArray ();
