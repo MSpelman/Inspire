@@ -42,14 +42,28 @@ public class Log
 
 	/*
 	 * Enables logging to files.
-	 * Removes any old files and creates and timestamps new files.
+	 * Creates and timestamps new files.
+	 * isCalibration - true if logging calibration data, false if logging game events
 	 */
-	public void Start ()
+	public void Start (bool isCalibration, string techName, string techEmail)
 	{
 		running = true;
 		// RemoveFiles ();
 		TimestampFilenames ();
-		CreateFiles ();
+		CreateFiles (isCalibration, techName, techEmail);
+	}
+
+	/*
+	 * Overloaded versions of above method
+	 */
+	public void Start (bool isCalibration)
+	{
+		Start (isCalibration, PlayerPrefs.GetString("techName"), PlayerPrefs.GetString("techEmail"));
+	}
+
+	public void Start ()
+	{
+		Start (false, PlayerPrefs.GetString("techName"), PlayerPrefs.GetString("techEmail"));
 	}
 
 	/*
@@ -114,14 +128,24 @@ public class Log
 		calibrationLogName = "calibrationlog_" + Timestamp ();
 	}
 
-	private void CreateFiles ()
+	private void CreateFiles (bool isCalibration, string techName, string techEmail)
 	{
 		try {
+			if (isCalibration)
+			{
+				File.Create (calibrationLogName).Close ();
+				using (var writer = File.AppendText (calibrationLogName)) {
+					writer.WriteLine (techName + "(" + techEmail + ")");
+				}
+			} else {
+				File.Create (eventLogName).Close ();
+				using (var writer = File.AppendText (eventLogName)) {
+					writer.WriteLine (techName + "(" + techEmail + ")");
+				}
+			}
 			File.Create (bellowsLogName).Close ();
-			File.Create (eventLogName).Close ();
-			File.Create (calibrationLogName).Close ();
 		} catch (Exception e) {
-			Debug.Log ("Unable to create file " + e);
+			Console.Write ("Unable to create file " + e);
 		}
 		
 	}

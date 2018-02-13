@@ -67,7 +67,7 @@ public class MainMenu : MonoBehaviour {
 			if (buttonPressed == "calibrate") {
 				adjustAssetsInteractivity (false, false, false, false, false);
 				CalibrationButton.GetComponentInChildren<Text> ().text = "stop calibration";
-				log.Start ();  // Start log for calibration
+				log.Start (true);  // Start log for calibration
 				GameSetup.CalibrationController = new CalibrationController (GameSetup.Input);
 				GameSetup.CurrentState = State.Calibration;
 			} else if (buttonPressed == "preferences") {
@@ -96,7 +96,7 @@ public class MainMenu : MonoBehaviour {
 				SceneManager.LoadScene("ScanView");
 			} else if (buttonPressed == "calibrate") {
 				CalibrationButton.GetComponentInChildren<Text> ().text = "Stop Calibration";
-				log.Start ();  // Start log for calibration
+				log.Start (true);  // Start log for calibration
 				GameSetup.CalibrationController = new CalibrationController (GameSetup.Input);
 				GameSetup.CurrentState = State.Calibration;
 				adjustAssetsInteractivity (false, false, false, false, false);
