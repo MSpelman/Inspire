@@ -8,7 +8,7 @@ public abstract class Algorithm
     static DateTime time = DateTime.Now; // global variable
                                          //public DateTime Time {get; set;}
                                          // Use this for initialization
-    public int SpawnPowerUp()
+	public virtual int SpawnPowerUp()
     {
         // Check time,
         // If not time to spawn power up, return -1

@@ -24,7 +24,7 @@ public static class GameSetup {
 	//These are inteded to be changed as the game advances, these are just temps
 	//TODO: There are better approaches to this..
 	public static List<string> AlgorithmSelectList {
-		get { return new List<string>{ "Base Line" , "Wave Form" }; }
+		get { return new List<string>{ "Base Line" , "Wave Form", "Custom" }; }
 	}
 	public static List<string> AvatarSelectList {
 		get { return new List<string>{ "Sub", "Mermaid" }; }
