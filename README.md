@@ -10,7 +10,7 @@ The game itself is very simple.  Inhaling makes the avatar ascend and exhaling c
 Technical Notes:
 The code requires NSubstitute to compile and run it's unit tests. Unity provides free Testing Tools that will import this Library, otherwise if you are not interested in unit tests you may delete compiler errors rooted from 'Editor' folders without detriment to game functionality.
 
-Contributors:
+This project is developed by Michael Spelman and is based on the MRI-Breathing-Game created by:
 - Jack Boehrer
 - Gibson Hladky
 - Zachary Myers
