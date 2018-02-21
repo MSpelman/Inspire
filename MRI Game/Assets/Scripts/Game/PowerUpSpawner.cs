@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using Shared;
+using System;
 
 /* PowerUpSpawner
  * This class is a script attached to the the PowerUp game object in the ScanView scene.
@@ -94,16 +95,18 @@ public class PowerUpSpawner : MonoBehaviour {
 	private Algorithm GetAlgorithm()
 	{
 		// Right now there is only on algorithm, but in the future this could be a select/case
-		if (GameSetup.AlgorithmID == 0)
-		{
+		if (GameSetup.AlgorithmID == 0) {
 			return new BaseLineAlgorithm (calibration);
-		}
-		else if (GameSetup.AlgorithmID == 1)
-		{
+		} else if (GameSetup.AlgorithmID == 1) {
 			return new WaveFormAlgorithm (calibration);
-		}
-		else
-		{
+		} else if (GameSetup.AlgorithmID == 2) {
+			try {
+				return new CustomAlgorithm (calibration, "customalgorithm.txt");
+			} catch (Exception) {
+				// CustomAlgorithm constructor could throw exceptions; if so, just use BaseLine
+				return new BaseLineAlgorithm (calibration);
+			}
+		} else {
 			return new BaseLineAlgorithm (calibration);
 		}
 	}

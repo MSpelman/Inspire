@@ -1,0 +1,27 @@
+*** NOTE: these instructions are a work-in-progress and may not be completely accurate. ***
+
+These instructions are for configuring a custom algorithm without using any programming.
+
+1. CREATE CONFIG FILE
+Navigate to the directory with the game executable.  The game executable will be called either "MRIBreathingGame" or "Inspire".  In this directory create a file called "customalgorithm.txt"
+
+2. SPECIFY CUSTOM ALGORITHM
+Edit the file created in step 1 to specify the custom algorithm.  This is done by typing in a caret (^) and pipe (|) delimited string, such as:
+
+2^10|1^90
+
+The number before the caret specifies how long the game should wait before spawning the pick-up (in seconds).
+
+The number after the caret specifies where the pick-up should spawn (0 - 100).  A zero tells the game to spawn the pick-up at the bottom of the player's range-of-motion, while a 100 tells it to spawn the pick-up at the top of the player's range-of-motion.  A number between 0 and 100 specifies that the pick-up should spawn that percentage of the way up from the bottom.
+
+The pipe separates one specification for when/where a pick-up should spawn from the next.
+
+Upon reaching the end of the string, the algorithm starts over at the beginning.
+
+Using the example above, it tells the game to wait 2 seconds before spawning a pick-up 10% of the way up from the bottom, then to wait 1 second before spawning one 90% of the way up.  The third pick-up is spawned 2 seconds later and is 10% of the way up from the bottom...
+
+
+3. SELECT CUSTOM ALGORITHM IN GAME
+On the game's main menu there is a drop down that allows you to choose which algorithm to use; select the "Custom" option.
+
+NOTE: The game is programmed such that if there is a problem with the custom algorithm file (or it is missing), it defaults to the BaseLine algorithm (i.e. the pick-ups are spawned at the bottom of the screen at 1 second intervals).  Thus if you don't see the pick-ups spawning as specified, check the error logs for problems.  The application should give you a meaningful error to help diagnose the problem (e.g. the file is missing/in the wrong directory, the data in the file is invalid, etc.)
