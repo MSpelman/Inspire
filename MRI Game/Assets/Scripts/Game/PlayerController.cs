@@ -116,10 +116,12 @@ public class PlayerController : MonoBehaviour {
 		int position = input.GetInput();
 
 		// Make sure the position is not out of the bounds set by the calibration
+		/* this is replaced by the squareroot transform of data outside normal bounds
 		if (position > calibration.Max)
 			position = calibration.Max;
 		if (position < calibration.Min)
 			position = calibration.Min;
+		*/
 
 		// Use GetVertical to translate the bellows position to the player's vertical position on the screen
 		float vertical = GetVertical(position);
@@ -194,11 +196,16 @@ public class PlayerController : MonoBehaviour {
 		
 	/* SetNormalization normalizes Player position based on calibration data
 	 * 
-	 * max  The maximum calibration value
-	 * min  The minimum calibration value
+	 * calMax  The maximum calibration value
+	 * calMin  The minimum calibration value
 	 */
-	private void SetNormalization(int max, int min)
+	private void SetNormalization(int calMax, int calMin)
 	{
+		// pad calibration max and min in case patient breaths above/below them during the game
+		double diff = (double) (calMax - calMin);
+		double pad = diff * 0.025;  // pad by 2.5%; this is plenty due to the transform we will apply in GetVertical
+		double max = (double)calMax + pad;
+		double min = (double)calMin - pad;
 		// This conversion is based on the equation for a line
 		// y = (m * x) + b
 		// y is the player's position
@@ -208,8 +215,8 @@ public class PlayerController : MonoBehaviour {
 		// max gets mapped to the highest player position (2.65767)
 		// min gets mapped to the lowest player position (-3)
 		// All other positions fall somewhere on the line between the two
-		m = 5.65767d / ( (double) max - (double) min);
-		b = 2.65767d - (m * (double)max);
+		m = 5.65767d / (max - min);
+		b = 2.65767d - (m * max);
 	}
 
 	/* GetVertical calculates the player's vertical position in the game based on the
@@ -221,7 +228,23 @@ public class PlayerController : MonoBehaviour {
 	 */
 	private float GetVertical(int bellowsPosition)
 	{
-		return (float)(m * (double) bellowsPosition + b);  // Uses line equation set up in SetNormalization()
+		if ((bellowsPosition >= calibration.Min) && (bellowsPosition <= calibration.Max)) {
+			// within normal range; use linear scale
+			return (float)(m * (double)bellowsPosition + b);  // Uses line equation set up in SetNormalization()
+		} else {
+			// not in normal range; transform data to smooth out errant values
+			double transPosition;
+			if (bellowsPosition < calibration.Min) {
+				double diff = (double)calibration.Min - (double)bellowsPosition;
+				double offset = Math.Sqrt (diff);
+				transPosition = calibration.Min - offset;
+			} else {
+				double diff = (double)bellowsPosition - (double)calibration.Max;
+				double offset = Math.Sqrt (diff);
+				transPosition = calibration.Max + offset;
+			}
+			return (float)(m * transPosition + b);
+		}
 	}
 
 	/* PowerUpValue calculates the value of the contacted power-up
