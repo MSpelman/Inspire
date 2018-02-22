@@ -58,22 +58,28 @@ public class PowerUpSpawner : MonoBehaviour {
 		
 	/* SetNormalization normalizes power-up position based on calibration data
 	 * 
-	 * max  The maximum calibration value
-	 * min  The minimum calibration value
+	 * calMax  The maximum calibration value
+	 * calMin  The minimum calibration value
 	 */
-	private void SetNormalization(int max, int min)
+	private void SetNormalization(int calMax, int calMin)
 	{
+		// pad calibration to force pick-ups towards middle of player's range
+		// this makes it so the player can still contact them even if there is "calibration drift"
+		double diff = (double) (calMax - calMin);
+		double pad = diff * 0.10;  // pad by 10.0%
+		double max = (double)calMax + pad;
+		double min = (double)calMin - pad;
 		// This conversion is based on the equation for a line
 		// y = (m * x) + b
 		// y is the power-up's position
 		// m is the slope of the line
 		// x is the bellows postion
 		// b is the intercept
-		// max gets mapped to the highest power-up position (3)
+		// max gets mapped to the highest player position (2.65767)
 		// min gets mapped to the lowest player position (-3)
 		// All other positions fall somewhere on the line between the two
-		m = 6d / ( (double) max - (double) min);
-		b = 3d - (m * (double)max);
+		m = 5.65767d / (max - min);
+		b = 2.65767d - (m * max);
 	}
 
 	/* GetVertical calculates the power-up's vertical position in the game based on the
